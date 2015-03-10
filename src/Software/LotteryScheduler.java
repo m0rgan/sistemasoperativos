@@ -10,6 +10,7 @@ import Hardware.Memory;
 import Hardware.StandardInput;
 import Hardware.StandardOutput;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class LotteryScheduler {
     
     public final int numTickets = 100;
     
-    Map<ProcessControlBlock, Integer[]> map;
+    Map<Integer, ProcessControlBlock> map;
     
     /**
      * Constructor
@@ -151,7 +152,8 @@ public class LotteryScheduler {
         time = 0;
         while(!readyQueue.isEmpty()) {
             // Move a process from ready to run
-            ProcessControlBlock pcb = readyQueue.remove();
+            
+            ProcessControlBlock pcb = chooseProcess();
             moveToRunning(pcb);
             // Load the context of the process
             processor.loadContext(pcb);
@@ -197,5 +199,29 @@ public class LotteryScheduler {
         System.out.println("Number of Processes: " + finishedQueue.size());
         double throughput = finishedQueue.size() / turnaroundTime;
         System.out.println("Throughput: " + finishedQueue.size() + "/" + turnaroundTime + " = " + throughput);
+    }
+    
+    public void deliverTickets() {
+        for (int i = 0; i < readyQueue.size(); i++) {
+            map.put(i + 1, readyQueue.get(i));
+        }
+    }
+    
+    public ProcessControlBlock chooseProcess() {
+        int ticket = (int)Math.floor(Math.random()*5);
+        ProcessControlBlock p = null;
+        for (Integer key : map.keySet()) {
+            if (key == ticket) {
+                p = map.get(key);
+                break;
+            }
+        }
+        
+        for (int i = 0; i < readyQueue.size(); i++) {
+            if (readyQueue.get(i).equals(p)) {
+                p = readyQueue.remove(i);
+            }
+        }
+        return p;
     }
 }
