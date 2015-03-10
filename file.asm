@@ -1,13 +1,18 @@
 .data 
-	.space 4
+.space 4
+	
 	buffer1: .space 4
+
 	par1: .word 1
 		  .word 4
 		  .word 4
+
 	buffer2: .space 4
+
 	par2: .word 1
 		  .word 20 
 		  .word 4
+		  
 .text
 	.main1
 		mov r1,r0
@@ -62,3 +67,84 @@
 		addi r4,r4,1
 		subi r6,r6,1
 		br loop1main2
+
+	.main3
+		mov r4,r0
+		addi r5,r0,100
+		addi r6,r0,10
+
+	comp3:
+		cmp r5,r0
+		bne loop1main3
+
+	print3:
+		stw buffer2(r0),r4
+		addi r11,r0,24
+		trap 5
+		ret
+
+	loop1main3:
+		cmp r6,r0
+		bne loop2main3
+		addi r6,r0,10
+		subi r5,r5,1
+		br comp3
+
+	loop2main3:
+		addi r4,r4,1
+		subi r6,r6,1
+		br loop1main3
+
+	.main4
+		mov r4,r0
+		addi r5,r0,100
+		addi r6,r0,10
+
+	comp4:
+		cmp r5,r0
+		bne loop1main4
+
+	print4:
+		stw buffer2(r0),r4
+		addi r11,r0,24
+		trap 5
+		ret
+
+	loop1main4:
+		cmp r6,r0
+		bne loop2main4
+		addi r6,r0,10
+		subi r5,r5,1
+		br comp4
+
+	loop2main4:
+		addi r4,r4,1
+		subi r6,r6,1
+		br loop1main4
+
+	.main5
+		mov r4,r0
+		addi r5,r0,100
+		addi r6,r0,10
+
+	comp5:
+		cmp r5,r0
+		bne loop1main5
+
+	print5:
+		stw buffer2(r0),r4
+		addi r11,r0,24
+		trap 5
+		ret
+
+	loop1main5:
+		cmp r6,r0
+		bne loop2main5
+		addi r6,r0,10
+		subi r5,r5,1
+		br comp5
+
+	loop2main5:
+		addi r4,r4,1
+		subi r6,r6,1
+		br loop1main5
