@@ -175,6 +175,7 @@ public class RRScheduler {
                 // Prepare flag for any new process to be run
                 processor.finished = false;
                 turnaroundTime += i;
+                System.out.println("Termine");
             } else if (i >= quantum) {
                 // Move the program to the ready queue
                 turnaroundTime += i;
@@ -183,13 +184,14 @@ public class RRScheduler {
                 addToBlockedQueue(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
-                turnaroundTime += i;
+                turnaroundTime += i + 100;
                 processor.interruptFlag = false;                
                 addToReadyQueue(pcb);
             }
             runningProcess = null;
             // Check here
         }
+        System.out.println("---------- Round Robin ----------");
         double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
         System.out.println("Turnaround Time: " + turnaroundTime + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
         System.out.println("Number of Processes: " + finishedQueue.size());

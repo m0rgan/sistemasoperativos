@@ -51,7 +51,7 @@ public class LotteryScheduler {
     public double turnaroundTime = 0;
     public double contextSwitchTime = 0;
     
-    public final int numTickets = 100;
+    public int ticket;
     
     Map<Integer, ProcessControlBlock> map;
     
@@ -95,6 +95,7 @@ public class LotteryScheduler {
     public void addToFinishedQueue(ProcessControlBlock pcb) {
         pcb.psw.status = ProgramStatusWord.FINISHED;
         finishedQueue.add(pcb);
+        
     }
     
     /**
@@ -179,21 +180,27 @@ public class LotteryScheduler {
                 // Prepare flag for any new process to be run
                 processor.finished = false;
                 turnaroundTime += i;
+                System.out.println("Termine");
+                map.remove(ticket);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
-                turnaroundTime += i;
+                turnaroundTime += i;                
                 addToReadyQueue(pcb);
+                updateMap(pcb);
             } else if(processor.interruptFlag) {
                 addToBlockedQueue(pcb);
+                updateMap(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
-                turnaroundTime += i;
-                processor.interruptFlag = false;                
+                turnaroundTime += i + 100;
+                processor.interruptFlag = false;
                 addToReadyQueue(pcb);
+                updateMap(pcb);
             }
             runningProcess = null;
             // Check here
         }
+        System.out.println("---------- Lottery ----------");
         double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
         System.out.println("Turnaround Time: " + turnaroundTime + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
         System.out.println("Number of Processes: " + finishedQueue.size());
@@ -207,21 +214,32 @@ public class LotteryScheduler {
         }
     }
     
-    public ProcessControlBlock chooseProcess() {
-        int ticket = (int)Math.floor(Math.random()*5);
+    public ProcessControlBlock chooseProcess() {        
         ProcessControlBlock p = null;
-        for (Integer key : map.keySet()) {
-            if (key == ticket) {
-                p = map.get(key);
-                break;
+        while(p == null) {
+            ticket = (int)Math.floor(Math.random()*5 + 1);
+            for (Integer key : map.keySet()) {
+                if (key == ticket) {
+                    p = map.get(key);
+                    break;
+                }
             }
-        }
         
-        for (int i = 0; i < readyQueue.size(); i++) {
-            if (readyQueue.get(i).equals(p)) {
-                p = readyQueue.remove(i);
+            for (int i = 0; i < readyQueue.size(); i++) {
+                if (readyQueue.get(i).equals(p)) {
+                    p = readyQueue.remove(i);
+                }
             }
         }
         return p;
+    }
+    
+    public void updateMap(ProcessControlBlock pcb) {
+        for (Integer key : map.keySet()) {
+                if (key == ticket) {
+                    map.put(key, pcb);
+                    break;
+                }
+        }
     }
 }
