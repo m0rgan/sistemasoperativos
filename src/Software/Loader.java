@@ -78,6 +78,9 @@ public class Loader {
             textSegmentLength = s.nextInt();
             main1Start = s.nextInt();
             main2Start = s.nextInt();
+            main3Start = s.nextInt();
+            main4Start = s.nextInt();
+            main5Start = s.nextInt();
             
             while(s.hasNext()) {
                 instruction = s.nextInt();
