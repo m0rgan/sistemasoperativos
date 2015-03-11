@@ -8,8 +8,10 @@ package Software;
 import Hardware.Processor;
 import Hardware.Memory;
 import Hardware.StandardOutput;
+import java.util.HashMap;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * This class simulates a Scheduler.
@@ -50,8 +52,12 @@ public class RRScheduler {
      * Global time variable
      */
     public int time; 
-    public double turnaroundTime = 0;
+    public double processTurnaroundTime = 0;
+    public double totalTurnaroundTime = 0;
     public double contextSwitchTime = 0;
+    public int index;
+    
+    Map<Integer, ProcessControlBlock> map;
     /**
      * Constructor
      * @param processor that will run the programs
@@ -61,6 +67,7 @@ public class RRScheduler {
         finishedQueue = new LinkedList<>();
         blockedQueue = new LinkedList<>();
         this.processor = processor;
+        map = new HashMap<>();
     }
     
     /**
@@ -150,6 +157,9 @@ public class RRScheduler {
             // Move a process from ready to run
             ProcessControlBlock pcb = readyQueue.remove();
             moveToRunning(pcb);
+            
+            index = getKey(pcb);
+            
             // Load the context of the process
             processor.loadContext(pcb);
             int i = 0;
@@ -173,29 +183,61 @@ public class RRScheduler {
                 addToFinishedQueue(pcb);
                 // Prepare flag for any new process to be run
                 processor.finished = false;
-                turnaroundTime += i;
+                processTurnaroundTime += i;
+                System.out.println("Process " + index + ":");
+                System.out.println("-Turnaround Time: " + processTurnaroundTime);
+                totalTurnaroundTime += processTurnaroundTime;
+                map.remove(index);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
-                turnaroundTime += i;
+                processTurnaroundTime += quantum;
                 addToReadyQueue(pcb);
+                updateMap(pcb);
             } else if(processor.interruptFlag) {
                 addToBlockedQueue(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
-                turnaroundTime += i + 100;
+                processTurnaroundTime += i + 100;
                 processor.interruptFlag = false;                
                 addToReadyQueue(pcb);
+                updateMap(pcb);
             }
             runningProcess = null;
             // Check here
         }
         System.out.println("---------- Round Robin ----------");
-        double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
-        System.out.println("Turnaround Time: " + (turnaroundTime + contextSwitchTime) + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
+        double averageTurnaroundTime = (totalTurnaroundTime + contextSwitchTime) / finishedQueue.size();
         System.out.println("Number of Processes: " + finishedQueue.size());
-        double throughput = finishedQueue.size() / turnaroundTime;
-        System.out.println("Throughput: " + finishedQueue.size() + "/" + (turnaroundTime + contextSwitchTime) + " = " + throughput);
+        System.out.println("Total Turnaround Time: " + totalTurnaroundTime);
+        System.out.println("Context Switch Time: " + contextSwitchTime);
+        System.out.println("Turnaround Time Average: " + "(" + totalTurnaroundTime + "+" + contextSwitchTime + ")" + "/" + finishedQueue.size() + " = " + averageTurnaroundTime);        
+        double throughput = finishedQueue.size() / (totalTurnaroundTime + contextSwitchTime);
+        System.out.println("Throughput: " + finishedQueue.size() + "/" + (totalTurnaroundTime + contextSwitchTime) + " = " + throughput);
     }
     
+    public void createMap() {
+        for (int i = 0; i < readyQueue.size(); i++) {
+            map.put(i + 1, readyQueue.get(i));
+        }
+    }
     
+    public void updateMap(ProcessControlBlock pcb) {
+        for (Integer key : map.keySet()) {
+                if (key == index) {
+                    map.put(key, pcb);
+                    break;
+                }
+        }
+    }
+    
+    public Integer getKey(ProcessControlBlock p) {
+        Integer i = 0;
+        for (Integer key : map.keySet()) {
+            if (map.get(key).equals(p)) {
+                i = key;
+                break;
+            }
+        }
+        return i;
+    }
 }

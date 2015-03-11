@@ -46,7 +46,8 @@ public class LotteryScheduler {
      * Global time variable
      */
     public int time; 
-    public double turnaroundTime = 0;
+    public double processTurnaroundTime = 0;
+    public double totalTurnaroundTime = 0;
     public double contextSwitchTime = 0;
     
     public int ticket;
@@ -151,7 +152,7 @@ public class LotteryScheduler {
         time = 0;
         while(!readyQueue.isEmpty()) {
             // Move a process from ready to run
-            
+            //double processTurnaroundTime = 0;
             ProcessControlBlock pcb = chooseProcess();
             moveToRunning(pcb);
             // Load the context of the process
@@ -177,18 +178,21 @@ public class LotteryScheduler {
                 addToFinishedQueue(pcb);
                 // Prepare flag for any new process to be run
                 processor.finished = false;
-                turnaroundTime += i;
+                processTurnaroundTime += i;
+                System.out.println("Process " + ticket + ":");
+                System.out.println("-Turnaround Time: " + processTurnaroundTime);
+                totalTurnaroundTime += processTurnaroundTime;
                 map.remove(ticket);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
-                turnaroundTime += quantum;                
+                processTurnaroundTime += quantum;                
                 addToReadyQueue(pcb);
                 updateMap(pcb);
             } else if(processor.interruptFlag) {
                 addToBlockedQueue(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
-                turnaroundTime += i + 100;
+                processTurnaroundTime += i + 100;
                 processor.interruptFlag = false;
                 addToReadyQueue(pcb);
                 updateMap(pcb);
@@ -197,11 +201,13 @@ public class LotteryScheduler {
             // Check here
         }
         System.out.println("---------- Lottery ----------");
-        double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
-        System.out.println("Turnaround Time: " + (turnaroundTime + contextSwitchTime) + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
+        double averageTurnaroundTime = (totalTurnaroundTime + contextSwitchTime) / finishedQueue.size();
         System.out.println("Number of Processes: " + finishedQueue.size());
-        double throughput = finishedQueue.size() / turnaroundTime;
-        System.out.println("Throughput: " + finishedQueue.size() + "/" + (turnaroundTime + contextSwitchTime) + " = " + throughput);
+        System.out.println("Total Turnaround Time: " + totalTurnaroundTime);
+        System.out.println("Context Switch Time: " + contextSwitchTime);
+        System.out.println("Turnaround Time Average: " + "(" + totalTurnaroundTime + "+" + contextSwitchTime + ")" + "/" + finishedQueue.size() + " = " + averageTurnaroundTime);        
+        double throughput = finishedQueue.size() / (totalTurnaroundTime + contextSwitchTime);
+        System.out.println("Throughput: " + finishedQueue.size() + "/" + (totalTurnaroundTime + contextSwitchTime) + " = " + throughput);
     }
     
     public void deliverTickets() {
