@@ -181,12 +181,11 @@ public class LotteryScheduler {
                 map.remove(ticket);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
-                turnaroundTime += i;                
+                turnaroundTime += quantum;                
                 addToReadyQueue(pcb);
                 updateMap(pcb);
             } else if(processor.interruptFlag) {
                 addToBlockedQueue(pcb);
-                //updateMap(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
                 turnaroundTime += i + 100;

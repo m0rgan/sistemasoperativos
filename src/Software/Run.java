@@ -21,8 +21,8 @@ public class Run {
         // Processor
         Processor processor = new Processor();
         // Scheduler
-        RRScheduler scheduler = new RRScheduler(processor);
-        //LotteryScheduler scheduler = new LotteryScheduler(processor);
+        //RRScheduler scheduler = new RRScheduler(processor);
+        LotteryScheduler scheduler = new LotteryScheduler(processor);
         
         // Where the programs will be loaded into memory
         int program1Origin = 50;        // in words
@@ -69,7 +69,7 @@ public class Run {
         int dataLength5 = loader.dataSegmentLength / 4;
 
         
-        //scheduler.deliverTickets();
+        scheduler.deliverTickets();
         // dump the memory
         /*
         System.out.println("Program1 before: ");
