@@ -7,7 +7,6 @@ package Software;
 
 import Hardware.Processor;
 import Hardware.Memory;
-import Hardware.StandardInput;
 import Hardware.StandardOutput;
 
 import java.util.LinkedList;
@@ -46,7 +45,7 @@ public class RRScheduler {
     /**
      * Number of instructions to execute before switching context
      */
-    private final int quantum = 30;
+    private final int quantum = 20;
     /**
      * Global time variable
      */
@@ -126,7 +125,7 @@ public class RRScheduler {
         if(trapNumber == 3) {
             // Call the device driver to perform the I/O operation
             //int readValue = StandardInput.readInteger();
-            int readValue = (int)Math.floor(Math.random()*100);
+            int readValue = (int)Math.floor(Math.random()*100 + 1);
             // Put the data read by the driver into the program bufferPointer space
             Memory.mem[(rr + bufferPointer)/4] = readValue;
         } else if (trapNumber == 5) {
@@ -175,7 +174,6 @@ public class RRScheduler {
                 // Prepare flag for any new process to be run
                 processor.finished = false;
                 turnaroundTime += i;
-                System.out.println("Termine");
             } else if (i >= quantum) {
                 // Move the program to the ready queue
                 turnaroundTime += i;
@@ -193,10 +191,10 @@ public class RRScheduler {
         }
         System.out.println("---------- Round Robin ----------");
         double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
-        System.out.println("Turnaround Time: " + turnaroundTime + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
+        System.out.println("Turnaround Time: " + (turnaroundTime + contextSwitchTime) + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
         System.out.println("Number of Processes: " + finishedQueue.size());
         double throughput = finishedQueue.size() / turnaroundTime;
-        System.out.println("Throughput: " + finishedQueue.size() + "/" + turnaroundTime + " = " + throughput);
+        System.out.println("Throughput: " + finishedQueue.size() + "/" + (turnaroundTime + contextSwitchTime) + " = " + throughput);
     }
     
     

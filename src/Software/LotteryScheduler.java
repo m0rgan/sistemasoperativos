@@ -7,10 +7,8 @@ package Software;
 
 import Hardware.Processor;
 import Hardware.Memory;
-import Hardware.StandardInput;
 import Hardware.StandardOutput;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -43,7 +41,7 @@ public class LotteryScheduler {
     /**
      * Number of instructions to execute before switching context
      */
-    private final int quantum = 30;
+    private final int quantum = 20;
     /**
      * Global time variable
      */
@@ -130,7 +128,7 @@ public class LotteryScheduler {
         if(trapNumber == 3) {
             // Call the device driver to perform the I/O operation
             //int readValue = StandardInput.readInteger();
-            int readValue = (int)Math.floor(Math.random()*100);
+            int readValue = (int)Math.floor(Math.random()*100 + 1);
             // Put the data read by the driver into the program bufferPointer space
             Memory.mem[(rr + bufferPointer)/4] = readValue;
         } else if (trapNumber == 5) {
@@ -180,7 +178,6 @@ public class LotteryScheduler {
                 // Prepare flag for any new process to be run
                 processor.finished = false;
                 turnaroundTime += i;
-                System.out.println("Termine");
                 map.remove(ticket);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
@@ -189,7 +186,7 @@ public class LotteryScheduler {
                 updateMap(pcb);
             } else if(processor.interruptFlag) {
                 addToBlockedQueue(pcb);
-                updateMap(pcb);
+                //updateMap(pcb);
                 executeTrap(processor.interruptNumber);                
                 time += 100;
                 turnaroundTime += i + 100;
@@ -202,10 +199,10 @@ public class LotteryScheduler {
         }
         System.out.println("---------- Lottery ----------");
         double totalTurnaroundTime = (turnaroundTime + contextSwitchTime) / finishedQueue.size();
-        System.out.println("Turnaround Time: " + turnaroundTime + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
+        System.out.println("Turnaround Time: " + (turnaroundTime + contextSwitchTime) + "/" + finishedQueue.size() + " = " + totalTurnaroundTime);
         System.out.println("Number of Processes: " + finishedQueue.size());
         double throughput = finishedQueue.size() / turnaroundTime;
-        System.out.println("Throughput: " + finishedQueue.size() + "/" + turnaroundTime + " = " + throughput);
+        System.out.println("Throughput: " + finishedQueue.size() + "/" + (turnaroundTime + contextSwitchTime) + " = " + throughput);
     }
     
     public void deliverTickets() {
@@ -221,13 +218,8 @@ public class LotteryScheduler {
             for (Integer key : map.keySet()) {
                 if (key == ticket) {
                     p = map.get(key);
+                    readyQueue.remove(p);
                     break;
-                }
-            }
-        
-            for (int i = 0; i < readyQueue.size(); i++) {
-                if (readyQueue.get(i).equals(p)) {
-                    p = readyQueue.remove(i);
                 }
             }
         }

@@ -1,11 +1,12 @@
-.data
-
-	.space 4
+.data 
+.space 4
+	
 	buffer1: .space 4
+
 	par1: .word 1
 		  .word 4
 		  .word 4
-
+		  
 .text
 	.main1
 		mov r1,r0
@@ -16,7 +17,9 @@
 		cmp r2,r0
 		bne loop1main1
 
-	end1:
+	print1:
+		addi r11,r0,8
+		trap 3
 		ret
 
 	loop1main1:
@@ -24,10 +27,6 @@
 		bne loop2main1
 		addi r3,r0,10
 		subi r2,r2,1
-		addi r11,r0,8
-		trap 3
-		trap 3
-		trap 3
 		br comp1
 
 	loop2main1:
@@ -44,7 +43,9 @@
 		cmp r2,r0
 		bne loop1main2
 
-	end2:
+	print2:
+		addi r11,r0,8
+		trap 3
 		ret
 
 	loop1main2:
@@ -52,10 +53,6 @@
 		bne loop2main2
 		addi r3,r0,10
 		subi r2,r2,1
-		addi r11,r0,8
-		trap 3
-		trap 3
-		trap 3
 		br comp2
 
 	loop2main2:
@@ -72,7 +69,9 @@
 		cmp r2,r0
 		bne loop1main3
 
-	end3:
+	print3:
+		addi r11,r0,8
+		trap 3
 		ret
 
 	loop1main3:
@@ -80,10 +79,6 @@
 		bne loop2main3
 		addi r3,r0,10
 		subi r2,r2,1
-		addi r11,r0,8
-		trap 3
-		trap 3
-		trap 3
 		br comp3
 
 	loop2main3:
@@ -100,7 +95,9 @@
 		cmp r2,r0
 		bne loop1main4
 
-	end4:
+	print4:
+		addi r11,r0,8
+		trap 3
 		ret
 
 	loop1main4:
@@ -108,10 +105,6 @@
 		bne loop2main4
 		addi r3,r0,10
 		subi r2,r2,1
-		addi r11,r0,8
-		trap 3
-		trap 3
-		trap 3
 		br comp4
 
 	loop2main4:
@@ -128,7 +121,9 @@
 		cmp r2,r0
 		bne loop1main5
 
-	end5:
+	print5:
+		addi r11,r0,8
+		trap 3
 		ret
 
 	loop1main5:
@@ -136,10 +131,6 @@
 		bne loop2main5
 		addi r3,r0,10
 		subi r2,r2,1
-		addi r11,r0,8
-		trap 3
-		trap 3
-		trap 3
 		br comp5
 
 	loop2main5:
