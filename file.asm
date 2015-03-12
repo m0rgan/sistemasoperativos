@@ -1,4 +1,4 @@
-.data
+.data					;I/O Bound instructions
 
 	.space 4
 	buffer1: .space 4

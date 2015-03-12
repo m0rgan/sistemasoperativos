@@ -1,4 +1,4 @@
-.data
+.data					;CPU Bound Instructions
 
 	.space 4
 	buffer1: .space 4
