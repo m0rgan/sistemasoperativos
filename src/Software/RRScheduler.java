@@ -8,6 +8,8 @@ package Software;
 import Hardware.Processor;
 import Hardware.Memory;
 import Hardware.StandardOutput;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import java.util.LinkedList;
@@ -58,6 +60,8 @@ public class RRScheduler {
     public int index;
     
     Map<Integer, ProcessControlBlock> map;
+    
+    ArrayList<Double> array;
     /**
      * Constructor
      * @param processor that will run the programs
@@ -68,6 +72,7 @@ public class RRScheduler {
         blockedQueue = new LinkedList<>();
         this.processor = processor;
         map = new HashMap<>();
+        array = new ArrayList<>();
     }
     
     /**
@@ -187,6 +192,7 @@ public class RRScheduler {
                 System.out.println("Process " + index + ":");
                 System.out.println("-Turnaround Time: " + processTurnaroundTime);
                 totalTurnaroundTime += processTurnaroundTime;
+                array.add(processTurnaroundTime);
                 map.remove(index);
             } else if (i >= quantum) {
                 // Move the program to the ready queue
@@ -207,10 +213,15 @@ public class RRScheduler {
         }
         System.out.println("---------- Round Robin ----------");
         double averageTurnaroundTime = (totalTurnaroundTime + contextSwitchTime) / finishedQueue.size();
+        Collections.sort(array);
+        double minTurnaroundTime = array.get(0);
+        double maxTurnaroundTime = array.get(array.size() - 1);
         System.out.println("Number of Processes: " + finishedQueue.size());
         System.out.println("Total Turnaround Time: " + totalTurnaroundTime);
-        System.out.println("Context Switch Time: " + contextSwitchTime);
-        System.out.println("Turnaround Time Average: " + "(" + totalTurnaroundTime + "+" + contextSwitchTime + ")" + "/" + finishedQueue.size() + " = " + averageTurnaroundTime);        
+        System.out.println("Minimum Turnaround Time: " + minTurnaroundTime);
+        System.out.println("Maximum Turnaround Time: " + maxTurnaroundTime);
+        System.out.println("Total Context Switch Time: " + contextSwitchTime);
+        System.out.println("Average Turnaround Time: " + "(" + totalTurnaroundTime + " + " + contextSwitchTime + ")" + "/" + finishedQueue.size() + " = " + averageTurnaroundTime);        
         double throughput = finishedQueue.size() / (totalTurnaroundTime + contextSwitchTime);
         System.out.println("Throughput: " + finishedQueue.size() + "/" + (totalTurnaroundTime + contextSwitchTime) + " = " + throughput);
     }

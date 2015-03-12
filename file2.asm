@@ -10,7 +10,7 @@
 	.main1
 		mov r1,r0
 		addi r2,r0,100
-		addi r3,r0,100
+		addi r3,r0,10
 
 	comp1:
 		cmp r2,r0
@@ -22,9 +22,13 @@
 	loop1main1:
 		cmp r3,r0
 		bne loop2main1
-		addi r3,r0,100
+		addi r3,r0,10
 		subi r2,r2,1
 		addi r11,r0,8
+		trap 3
+		trap 3
+		trap 3
+		trap 3
 		trap 3
 		br comp1
 
@@ -35,8 +39,8 @@
 
 	.main2
 		mov r1,r0
-		addi r2,r0,100
-		addi r3,r0,100
+		addi r2,r0,300
+		addi r3,r0,30
 
 	comp2:
 		cmp r2,r0
@@ -48,9 +52,13 @@
 	loop1main2:
 		cmp r3,r0
 		bne loop2main2
-		addi r3,r0,100
+		addi r3,r0,30
 		subi r2,r2,1
 		addi r11,r0,8
+		trap 3
+		trap 3
+		trap 3
+		trap 3
 		trap 3
 		br comp2
 
@@ -61,8 +69,8 @@
 
 	.main3
 		mov r1,r0
-		addi r2,r0,100
-		addi r3,r0,100
+		addi r2,r0,500
+		addi r3,r0,50
 
 	comp3:
 		cmp r2,r0
@@ -74,9 +82,13 @@
 	loop1main3:
 		cmp r3,r0
 		bne loop2main3
-		addi r3,r0,100
+		addi r3,r0,50
 		subi r2,r2,1
 		addi r11,r0,8
+		trap 3
+		trap 3
+		trap 3
+		trap 3
 		trap 3
 		br comp3
 
@@ -88,7 +100,7 @@
 	.main4
 		mov r1,r0
 		addi r2,r0,100
-		addi r3,r0,100
+		addi r3,r0,10
 
 	comp4:
 		cmp r2,r0
@@ -100,9 +112,13 @@
 	loop1main4:
 		cmp r3,r0
 		bne loop2main4
-		addi r3,r0,100
+		addi r3,r0,10
 		subi r2,r2,1
 		addi r11,r0,8
+		trap 3
+		trap 3
+		trap 3
+		trap 3
 		trap 3
 		br comp4
 
@@ -113,8 +129,8 @@
 
 	.main5
 		mov r1,r0
-		addi r2,r0,100
-		addi r3,r0,100
+		addi r2,r0,500
+		addi r3,r0,50
 
 	comp5:
 		cmp r2,r0
@@ -126,9 +142,13 @@
 	loop1main5:
 		cmp r3,r0
 		bne loop2main5
-		addi r3,r0,100
+		addi r3,r0,50
 		subi r2,r2,1
 		addi r11,r0,8
+		trap 3
+		trap 3
+		trap 3
+		trap 3
 		trap 3
 		br comp5
 
