@@ -1,7 +1,7 @@
 .data					;CPU Bound Instructions
 
 	.space 4
-	buffer1: .space 4
+	buffer1: .space 3
 	par1: .word 1
 		  .word 4
 		  .word 4
