@@ -21,7 +21,7 @@ public class Run {
         // Processor
         Processor processor = new Processor();
         // Scheduler
-        // scheduler = new RRScheduler(processor);
+        //RRScheduler scheduler = new RRScheduler(processor);
         LotteryScheduler scheduler = new LotteryScheduler(processor);
         
         // Where the programs will be loaded into memory
